@@ -14,6 +14,7 @@ import {
 import { fetchFollow, fetchInfluencer } from "../../util/myPageApi";
 import { getUserId } from "../../util/getUser";
 import { CheckCircle } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 interface User {
   username: string;
@@ -32,16 +33,18 @@ interface Influencer {
 interface UserProfileProps {
   influencerId: string;
   onFollowStatusChange?: (influencerId: string, isFollowing: boolean) => void; // 선택적 prop
+  onClose: () => void; // 모달 닫기 함수 추가
 }
-
 
 const UserProfile: React.FC<UserProfileProps> = ({
   influencerId,
   onFollowStatusChange,
+  onClose, // 모달 닫기 함수 추가
 }) => {
   const [influencer, setInfluencer] = useState<Influencer | null>(null);
   const [isFollowing, setIsFollowing] = useState<boolean>(false);
   const [userId, setUserId] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   // 사용자 ID 가져오기
   useEffect(() => {
@@ -86,101 +89,14 @@ const UserProfile: React.FC<UserProfileProps> = ({
     }
   };
 
+  const handlePageButtonClick = () => {
+    navigate(`/influencer/${influencerId}`);
+    onClose(); // 모달 닫기 함수 호출
+  };
+
   return (
-    // <Container
-
-    //   maxWidth="md"
-    //   sx={{
-
-    //     backgroundImage: `url(${influencer?.banner_picture || ""})`,
-    //     backgroundSize: "cover",
-    //     backgroundPosition: "center",
-    //     backgroundRepeat: "no-repeat",
-    //     display: "flex",
-    //     justifyContent: "center",
-    //     alignItems: "center",
-    //     padding: 4,
-    //     position: "relative",
-    //   }}
-    // >
-    //   <Card
-    //     sx={{
-    //       width: "100%",
-    //       backgroundColor: "red",
-    //       // backgroundColor: "rgba(255, 255, 255, 0.85)", // 반투명 카드 배경
-    //       borderRadius: 4,
-    //       boxShadow: 3,
-    //       padding: 3,
-    //     }}
-    //   >
-    //     <CardContent>
-    //       <Grid container spacing={4} alignItems="center">
-    //         {/* 프로필 이미지 */}
-    //         <Grid
-    //           item
-    //           xs={12}
-    //           sm={4}
-    //           sx={{
-    //             display: "flex",
-    //             justifyContent: "center",
-    //           }}
-    //         >
-    //           <Avatar
-    //             src={influencer?.User?.profile_picture || ""}
-    //             alt={influencer?.User?.username || "User"}
-    //             sx={{
-    //               width: 150,
-    //               height: 150,
-    //               boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
-    //             }}
-    //           />
-    //         </Grid>
-
-    //         {/* 유저 정보 및 버튼 */}
-    //         <Grid item xs={12} sm={8}>
-    //           <Typography
-    //             variant="h5"
-    //             fontWeight="bold"
-    //             sx={{ marginBottom: 1 }}
-    //           >
-    //             {influencer?.User?.username || "닉네임 없음"}
-    //           </Typography>
-    //           <Typography
-    //             variant="body1"
-    //             color="textSecondary"
-    //             sx={{ marginBottom: 2 }}
-    //           >
-    //             {influencer?.User?.about_me || "소개가 없습니다."}
-    //           </Typography>
-
-    //           <Stack direction="row" spacing={2} alignItems="center">
-    //             <Chip
-    //               label={influencer?.category || "카테고리 없음"}
-    //               color="primary"
-    //               size="medium"
-    //             />
-    //             {/* 팔로우/언팔로우 버튼 */}
-    //             {userId && (
-    //               <Button
-    //                 variant="outlined"
-    //                 color={isFollowing ? "secondary" : "primary"}
-    //                 onClick={handleFollowToggle}
-    //                 sx={{ textTransform: "none", fontWeight: "bold" }}
-    //               >
-    //                 {isFollowing ? "언팔로우" : "팔로우"}
-    //               </Button>
-    //             )}
-    //           </Stack>
-    //         </Grid>
-    //       </Grid>
-    //     </CardContent>
-    //   </Card>
-    // </Container>
-
-
     <Card
       sx={{
-
         width: "100%",
         borderRadius: 4,
         boxShadow: 4,
@@ -233,19 +149,32 @@ const UserProfile: React.FC<UserProfileProps> = ({
           }}
           variant="outlined" label={influencer?.category || '카테고리 없음'} color="primary" />
         {userId && (
-          <Button
-            variant={isFollowing ? "contained" : "outlined"}
-            // color={isFollowing ? 'secondary' : 'primary'}
-            color="primary"
-            onClick={handleFollowToggle}
-            sx={{
-              textTransform: 'none',
-              borderRadius: "16px",
-              width: "85%"
-            }}
-          >
-            {isFollowing ? '언팔로우' : '팔로우'}
-          </Button>
+          <Stack direction="row" spacing={2} justifyContent="center">
+            <Button
+              variant={isFollowing ? "contained" : "outlined"}
+              color="primary"
+              onClick={handleFollowToggle}
+              sx={{
+                textTransform: 'none',
+                borderRadius: "16px",
+                width: "40%"
+              }}
+            >
+              {isFollowing ? '언팔로우' : '팔로우'}
+            </Button>
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={handlePageButtonClick}
+              sx={{
+                textTransform: 'none',
+                borderRadius: "16px",
+                width: "40%"
+              }}
+            >
+              페이지
+            </Button>
+          </Stack>
         )}
       </CardContent>
     </Card>

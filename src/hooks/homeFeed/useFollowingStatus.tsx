@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Feed, FollowingStatus } from "../../types/homeFeedType";
 import axios from "axios";
+import { getInfluencerResponse, patchToggleIsFollowingInfluencer, postUserResponse } from '../../api/requests/useFollowingStatusApi';
 import { useLoggedInUserStore, useLoginAlertStore } from "../../store/authStore";
 
 export const useFollow = (
@@ -28,11 +29,17 @@ export const useFollow = (
           ? loggedInUser.follow.filter((id) => id !== feed.influencer_id) // 언팔로우
           : [...loggedInUser.follow, feed.influencer_id]; // 팔로우
 
-        await axios.patch("http://localhost:4000/homefeed/patchuserfollow", {
+        const data = {
           userId: loggedInUser.userId,
           influencerId: feed.influencer_id,
-          isFollowing: !isFollowing, // 새로운 상태 전달
-        });
+          isFollowing: !isFollowing,
+        }
+        const response = await patchToggleIsFollowingInfluencer(data);
+        if (!response || !response.data) {
+          console.error('User patchToggleIsFollowingInfluencer is not available.');
+          return; // 빈 결과 반환
+        }
+
 
         // Zustand 상태 업데이트
         setLoggedInUser({
@@ -63,18 +70,26 @@ export const useFollow = (
           continue;
         }
 
-        const influencerResponse = await axios.get(
-          "http://localhost:4000/homefeed/getMembershipProductsFromInfluencerId",
-          { params: { influencerId: feed.influencer_id } }
-        );
+        const params = {
+          influencerId: feed.influencer_id
+        }
+        const influencerResponse = await getInfluencerResponse(params);
+        if (!influencerResponse || !influencerResponse.data) {
+          console.error('User getInfluencerResponse is not available.');
+          return; // 빈 결과 반환
+        }
 
-        const userResponse = await axios.post(
-          "http://localhost:4000/homefeed/getMembershipFromUserId",
-          { userId: loggedInUser?.userId }
-        );
+        const data = {
+          userId: loggedInUser?.userId
+        }
+        const userResponse = await postUserResponse(data);
+        if (!userResponse || !userResponse.data) {
+          console.error('User postUserResponse is not available.');
+          return; // 빈 결과 반환
+        }
 
         const influencerProducts: number[] = influencerResponse.data.map((item: { id: number }) => item.id); /// 타입 지정 필수
-        const userProducts: number[] = userResponse.data.map((item: { product_id: number }) => item.product_id);
+        const userProducts: number[] = Array.isArray(userResponse.data) ? userResponse.data.map((item: { product_id: number }) => item.product_id) : [];
 
         // 겹치는 제품 여부 확인
         const hasCommonProduct = influencerProducts.some((pi) =>

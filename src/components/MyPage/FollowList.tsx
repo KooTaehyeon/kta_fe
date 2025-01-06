@@ -60,7 +60,7 @@ const FollowList: React.FC = () => {
   if (follows.length === 0) {
     return (
       <Container maxWidth="md" sx={{ marginTop: 4, textAlign: "center" }}>
-        <Typography variant="h6" color="textSecondary">
+        <Typography variant="h6" color="textSecondary" marginBottom={"30px"}>
           팔로우한 인플루언서가 없습니다.
         </Typography>
       </Container>

@@ -7,6 +7,8 @@ import {
   Button,
   CircularProgress,
   Box,
+  Chip,
+  Stack,
 } from "@mui/material";
 import { User } from "../../store/userStore";
 import { useNavigate } from "react-router-dom";
@@ -132,6 +134,20 @@ const MyInfo: React.FC<MyInfoProps> = ({ user, setUser, setIsEditing }) => {
             profilePicture={user?.profile_picture || ""}
             isInfluencer={isInfluencer}
           />
+          {isInfluencer && (
+            <Stack direction="row" spacing={1} justifyContent="center" sx={{ mb: 2 }}>
+              <Chip
+                label={`카테고리: ${user?.influencer?.category || '카테고리 없음'}`}
+                color="primary"
+                variant="outlined"
+              />
+              <Chip
+                label={`팔로워 수: ${user?.influencer?.follower.length || 0}`}
+                color="secondary"
+                variant="outlined"
+              />
+            </Stack>
+          )}
           <Box
             sx={{
               display: "flex",
@@ -174,7 +190,7 @@ const MyInfo: React.FC<MyInfoProps> = ({ user, setUser, setIsEditing }) => {
 
             sx={{ margin: 2, marginLeft: "6%" }}
           >
-            {loading ? <CircularProgress size={24} /> : "인플루언서 탈퇴"}
+            {/* {loading ? <CircularProgress size={24} /> : "인플루언서 탈퇴"} */}
           </Button>
         )}
       </Card>

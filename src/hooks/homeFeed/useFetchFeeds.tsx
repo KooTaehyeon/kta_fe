@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Feed, FeedPrototype } from "../../types/homeFeedType";
 import { processFeeds } from "../../util/homeFeedApi";
+
+import { postFetchFeeds, postInitFeeds } from '../../api/requests/useFetchFeedsApi';
 import { useLike } from "./useLike";
 import { useLoggedInUserStore } from "../../store/authStore";
 
@@ -27,11 +29,16 @@ export const useFetchFeeds = (initialFeedType: "all" | "following" = "all") => {
     const endpoint = feedType === "following" ? "getfollowingfeeds" : "getfeeds";
 
     try {
-      const response = await axios.post(`http://localhost:4000/homefeed/${endpoint}`, {
+      const data = {
         queue: currentQueue,
-        limit,
+        limit: limit,
         userId: loggedInUser?.userId,
-      });
+      }
+      const response = await postFetchFeeds(endpoint, data);
+      if (!response || !response.data) {
+        console.error('User getFetchFeeds is not available.');
+        return { processedFeeds: [], newHasMore: false }; // 빈 결과 반환
+      }
 
       const newFeedsPrototype: FeedPrototype[] = response.data;
       const processedFeeds = await processFeeds(newFeedsPrototype, loggedInUser);
@@ -52,10 +59,17 @@ export const useFetchFeeds = (initialFeedType: "all" | "following" = "all") => {
   const initFeeds = async (): Promise<number[]> => {
     setIsLoading(true);
     try {
-      const response = await axios.post("http://localhost:4000/homefeed/getFeedsQueue", {
+
+      const data = {
         userId: loggedInUser?.userId,
         userFollowList: loggedInUser?.follow,
-      });
+      }
+      const response = await postInitFeeds(data);
+      if (!response || !response.data) {
+        console.error('User getFetchFeeds is not available.');
+        return []; // 빈 결과 반환
+      }
+
       const initQueue = response.data as number[];
       console.log("initial queue", initQueue);
       setQueue(initQueue); // 상태 업데이트

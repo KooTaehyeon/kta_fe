@@ -1,3 +1,4 @@
+import { hasUncaughtExceptionCaptureCallback } from "process";
 import { tryParseJson } from "../../util/tryParseJson";
 import axiosInstance from "../client/index";
 

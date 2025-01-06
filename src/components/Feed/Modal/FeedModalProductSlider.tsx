@@ -40,8 +40,7 @@ const ProductSlider = ({ products }: { products: ProductsProps[] }) => {
                 borderRadius: 2,
                 bgcolor: '#fff',
                 p: 1,
-                width: '230px', // 슬라이드 크기 조정
-
+                width: 'calc(100% - 15px)', // 슬라이드 크기 조정
                 textAlign: 'center',
                 display: 'flex',
                 flexDirection: 'column',
@@ -66,10 +65,11 @@ const ProductSlider = ({ products }: { products: ProductsProps[] }) => {
                   mt: 1,
                   // position: "absolute",
                   fontWeight: "bold",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
                   '&:hover': {
                     backgroundColor: 'primary.main',
                     color: 'white',
-                    border: 'none',
                   },
                 }}>
                 {item.title}

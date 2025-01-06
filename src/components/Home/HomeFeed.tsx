@@ -141,6 +141,26 @@ const HomeFeed: React.FC<HomeFeedProps> = () => {
     return formattedDate;
   };
 
+  // 사용자 팔로잉 상태를 가져오는 함수 정의
+  const fetchUserFollowingStatus = async () => {
+    // API 호출 예시
+    const response = await fetch("/api/user/following-status");
+    if (!response.ok) {
+      throw new Error("Failed to fetch following status");
+    }
+    return response.json();
+  };
+
+  const checkFollowing = async () => {
+    try {
+      const userResponse = await fetchUserFollowingStatus();
+      const followingData = Array.isArray(userResponse.data) ? userResponse.data : [];
+      // ...existing code...
+    } catch (error) {
+      console.error("Failed to fetch following status:", error);
+    }
+  };
+
   return (
     <>
       <LoginRequiredAlert />
@@ -233,6 +253,7 @@ const HomeFeed: React.FC<HomeFeedProps> = () => {
                 <CardContent
                   sx={{
                     padding: "16px 0px 0px 0px",
+                    paddingBottom: "0px !important", // 기본 padding-bottom 제거
                   }}
                 >
                   <Box
@@ -352,7 +373,7 @@ const HomeFeed: React.FC<HomeFeedProps> = () => {
           currentFeed={selectedFeed}
           onClose={handlePopoverClose}
           isFollowing={followingStatus[selectedFeed.influencer_id] || 0}
-          onToggleFollow={() => toggleIsFollowingInfluencer(selectedFeed)} // 상태 변경 함수 전달
+          onToggleFollow={() => toggleIsFollowingInfluencer(selectedFeed)} // 상태 ��경 함수 전달
         />
       )}
     </>

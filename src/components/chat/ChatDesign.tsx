@@ -29,6 +29,10 @@ import { SendRounded } from '@mui/icons-material';
 import FollowModal from '../MyPage/FollowModal';
 import MessageBubble from './MessageBubble';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
+import { color } from 'framer-motion';
+
+import { userGet } from '../../api/requests/userApi';
+import { chatSaveMessage, chatHandleImageUpload, chatFetchMessages } from '../../api/requests/chatApi';
 
 interface ChatProps {
   roomId: string;
@@ -108,9 +112,7 @@ const Chat: React.FC<ChatProps> = ({ roomId }) => {
 
   }, []);
 
-  // useEffect(() => {
-  //     onMessage(handleNewMessage);
-  // }, [messages]);
+
 
   useEffect(() => {
     onMessage((msg: any) => {
@@ -161,11 +163,14 @@ const Chat: React.FC<ChatProps> = ({ roomId }) => {
 
   const saveMessage = async (content: string) => {
     try {
-      await axios.post('http://localhost:4000/message', {
+
+      const data = {
         room_id: roomId,
         user_id,
         message_content: content,
-      });
+      }
+      await chatSaveMessage(data)
+
     } catch (err) {
       console.error('Error saving message:', err);
     }
@@ -179,15 +184,13 @@ const Chat: React.FC<ChatProps> = ({ roomId }) => {
       try {
         const formData = new FormData();
         formData.append('file', file);
-        const response = await axios.post(
-          'http://localhost:4000/message/upload',
-          formData,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          }
-        );
+
+        const response = await chatHandleImageUpload(formData);
+        if (!response || !response.data) {
+          console.error('User chatHandleImageUpload is not available.');
+          return;
+        }
+
         const imageUrl = response.data.url;
         sendMessage(roomId, imageUrl, {
           username: user_name,
@@ -208,9 +211,11 @@ const Chat: React.FC<ChatProps> = ({ roomId }) => {
     const previousScrollHeight = container?.scrollHeight || 0;
 
     try {
-      const response = await axios.get(
-        `http://localhost:4000/message/room?roomId=${roomId}&page=${currentPage}&limit=${limit}`
-      );
+      const response = await chatFetchMessages(roomId, currentPage, limit);
+      if (!response || !response.data) {
+        console.error('User chatFetchMessages is not available.');
+        return;
+      }
       const fetchedMessages = response.data.map((msg: any) => ({
         id: msg.message_id,
         user_id: msg.user_id,
@@ -323,7 +328,7 @@ const Chat: React.FC<ChatProps> = ({ roomId }) => {
             borderRadius: '18px',
           }}
         >
-          <IconButton onClick={() => navigate(-1)} sx={{ color: 'black' }}>
+          <IconButton onClick={() => navigate(-1)} sx={{ color: 'primary.main' }}>
             <ArrowBackIcon />
           </IconButton>
           <Typography
@@ -331,17 +336,14 @@ const Chat: React.FC<ChatProps> = ({ roomId }) => {
               fontSize: '18px',
               marginLeft: 1,
               fontWeight: 'bold',
+              color: 'primary.main',
             }}
           >
-            채팅방
+            {'인플루언서 채팅방'}
           </Typography>
         </Box>
-        <Tabs value={0} sx={{ color: '#fff' }}>
-          <Tab label='전체방' sx={{ minWidth: 'auto', color: 'black' }} />
-          {/* <Tab label='인플만' sx={{ minWidth: 'auto', color: 'black' }} /> */}
-        </Tabs>
       </Box>
-      <Divider variant='middle' />
+      <Divider variant='middle' sx={{ color: 'primary.main' }} />
       <Box
         ref={chatContainerRef}
         sx={{

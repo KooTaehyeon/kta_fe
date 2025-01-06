@@ -105,8 +105,11 @@ const NewNavbar = () => {
             </Badge>
           ),
           onClick: handleClearNotifications,
-        },
-        { name: "작성하기", link: "/write", icon: <CreateIcon /> },
+        });
+        if(loggedInUser.influencerId) {
+        baseMenu.push({ name: "작성하기", link: "/write", icon: <CreateIcon /> })
+      };
+      baseMenu.push(
         { name: "채팅하기", link: "/room", icon: <SendIcon /> },
         { name: "마이페이지", link: "/mypage", icon: <PersonIcon /> },
       );

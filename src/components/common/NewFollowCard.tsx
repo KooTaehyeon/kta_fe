@@ -152,7 +152,7 @@ const FollowCard: React.FC<FollowCardProps> = ({
             }}
           >
 
-            {isSubscribed && subscription ? "멤버십 변경" : "멤버쉽 가입"}
+            {isSubscribed && subscription ? "멤버쉽 변경" : "멤버쉽 가입"}
 
           </Button>
 

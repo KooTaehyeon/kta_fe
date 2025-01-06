@@ -1,8 +1,9 @@
 import axios from "axios";
+import axiosInstance from "../api/client/index";
 
 export const fetchUserInfo = async (id: string) => {
   try {
-    const response = await axios.get(`http://localhost:4000/user/${id}`);
+    const response = await axiosInstance.get(`/user/${id}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching user info:", error);
@@ -12,7 +13,7 @@ export const fetchUserInfo = async (id: string) => {
 
 export const fetchUserLikes = async (id: string) => {
   try {
-    const response = await axios.get(`http://localhost:4000/user/${id}/likes`);
+    const response = await axiosInstance.get(`user/${id}/likes`);
     return response.data; // 정상적인 데이터 반환
   } catch (error: any) {
     if (axios.isAxiosError(error) && error.response?.status === 404) {
@@ -25,11 +26,10 @@ export const fetchUserLikes = async (id: string) => {
   }
 };
 
-export const fetchUserFeeds = async (id: string) => {
+export const fetchUserFeeds = async (userId: string | number) => {
   try {
-    const response = await axios.get(`http://localhost:4000/user/${id}/feeds`);
-    // console.log('response.data:', response.data);
-    return response.data.length === 0 ? [] : response.data;
+    const response = await axiosInstance.get(`/user/${userId}/feeds`);
+    return response.data;
   } catch (error) {
     console.error("Error fetching feeds:", error);
     throw error;
@@ -38,8 +38,8 @@ export const fetchUserFeeds = async (id: string) => {
 
 export const fetchUserFollowings = async (id: string) => {
   try {
-    const response = await axios.get(
-      `http://localhost:4000/user/${id}/follows`,
+    const response = await axiosInstance.get(
+      `/user/${id}/follows`,
     );
     // console.log('response.data:', response.data);
     return response.data;
@@ -51,8 +51,8 @@ export const fetchUserFollowings = async (id: string) => {
 
 export const fetchUserModify = async (id: string, updatedData: FormData) => {
   try {
-    const response = await axios.put(
-      `http://localhost:4000/user/${id}`,
+    const response = await axiosInstance.put(
+      `/user/${id}`,
       updatedData,
       {
         headers: {
@@ -69,7 +69,7 @@ export const fetchUserModify = async (id: string, updatedData: FormData) => {
 
 export const fetchInfluencers = async () => {
   try {
-    const response = await axios.get("http://localhost:4000/influencer/all");
+    const response = await axiosInstance.get("/influencer/all");
     return response.data;
   } catch (error) {
     console.error("Error fetching influencers:", error);
@@ -79,8 +79,8 @@ export const fetchInfluencers = async () => {
 
 export const fetchInfluencer = async (influencerId: string) => {
   try {
-    const response = await axios.get(
-      `http://localhost:4000/influencer/${influencerId}`,
+    const response = await axiosInstance.get(
+      `/influencer/${influencerId}`,
     );
     return response.data;
   } catch (error) {
@@ -91,8 +91,8 @@ export const fetchInfluencer = async (influencerId: string) => {
 
 export const fetchFollow = async (userId: string, influencerId: string) => {
   try {
-    const response = await axios.post(
-      `http://localhost:4000/influencer/follow`,
+    const response = await axiosInstance.post(
+      `/influencer/follow`,
       {
         userId,
         influencerId,
@@ -107,8 +107,8 @@ export const fetchFollow = async (userId: string, influencerId: string) => {
 
 export const toggleProductStatus = async (productId: any) => {
   try {
-    const response = await axios.patch(
-      `http://localhost:4000/membership/product/${productId}`,
+    const response = await axiosInstance.patch(
+      `/membership/product/${productId}`,
     );
     console.log("활성화 상태 변경: ", response.data ? "활성화" : "비활성화");
     return response.data;
@@ -119,8 +119,8 @@ export const toggleProductStatus = async (productId: any) => {
 };
 
 export const fetchUserSubscriptions = async (userId: string) => {
-  const response = await axios.get(
-    `http://localhost:4000/membership/subscriptions/${userId}`,
+  const response = await axiosInstance.get(
+    `/membership/subscriptions/${userId}`,
   );
   return response.data.map((sub: any) => ({
     influencerId: sub.product?.influencer_id,
@@ -138,8 +138,8 @@ export const registerInfluencer = async (influencerData: {
   category: string;
 }) => {
   try {
-    const response = await axios.post(
-      "http://localhost:4000/influencer/register", // API 엔드포인트
+    const response = await axiosInstance.post(
+      "/influencer/register", // API 엔드포인트
       influencerData,
     );
     return response.data;
@@ -151,8 +151,8 @@ export const registerInfluencer = async (influencerData: {
 
 export const exitInfluencer = async (influencer_id: number) => {
   try {
-    const response = await axios.delete(
-      `http://localhost:4000/influencer/${influencer_id}`, // API 엔드포인트
+    const response = await axiosInstance.delete(
+      `/influencer/${influencer_id}`, // API 엔드포인트
     );
     return response.data;
   } catch (error) {
@@ -167,8 +167,8 @@ export const applyInfluencer = async (influencerData: {
   banner_picture: string;
 }) => {
   try {
-    const response = await axios.post(
-      "http://localhost:4000/influencer/apply", // 신청 API 엔드포인트
+    const response = await axiosInstance.post(
+      "/influencer/apply", // 신청 API 엔드포인트
       influencerData,
     );
     return response.data;
@@ -183,7 +183,7 @@ export const checkPendingApplication = async (
 ): Promise<boolean> => {
   try {
     const response = await fetch(
-      `http://localhost:4000/influencer/apply/check/${userId}`,
+      `/influencer/apply/check/${userId}`,
     );
     const data = await response.json();
     return data.isPending;

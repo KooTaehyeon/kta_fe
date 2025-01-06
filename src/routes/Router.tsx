@@ -10,7 +10,7 @@ import FollowList from "../components/MyPage/FollowList";
 import FeedList from "../components/MyPage/FeedList";
 import Room from "../page/Room";
 import NewChat from "../page/Chat";
-
+import InfluencerPage from "../page/InfluencerPage";
 import PaymentSuccess from '../components/Payment/PaymentSuccess';
 import PaymentFail from '../components/Payment/PaymentFail';
 import Payment from '../page/Payment';
@@ -18,6 +18,7 @@ import ManageMembership from '../components/MyPage/Membership/ManageMembership';
 import Notification from '../page/NotificationPage';
 import PrivateRoute from '../components/common/PrivateRoute';
 import SearchPage from '../page/SearchPage';
+
 export const routes = [
   {
     path: '/',
@@ -33,6 +34,7 @@ export const routes = [
       { path: "/login/callback", element: <SocialLoginCallback /> },
       { path: "/update/:id", element: <Write />, index: true },
       { path: "/noti", element: <Notification /> },
+      { path: "/influencer/:id", element: <InfluencerPage /> }, // 올바른 컴포넌트 설정
 
       {
         path: '/mypage',

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Box, Typography, Avatar, IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import axios from 'axios';
+import { chatHandleDeleteImage } from '../../api/requests/chatApi';
 
 interface Message {
     id: string;
@@ -25,8 +26,16 @@ interface MessageBubbleProps extends Message {
 
 const handleDeleteImage = async (id: string, key: string, handleDeleteMessage: (id: string) => void) => {
     console.log('Deleting image:', key);
+    const data = {
+        id: id,
+        key: key,
+    }
     try {
-        await axios.post('http://localhost:4000/message/delete', { id, key });
+        const response = await chatHandleDeleteImage(data)
+        if (!response || !response.data) {
+            console.error('User chatHandleDeleteImage is not available.');
+            return;
+        }
         handleDeleteMessage(id);
     } catch (error) {
         console.error('Error deleting image:', error);

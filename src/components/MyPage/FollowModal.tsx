@@ -63,6 +63,7 @@ const FollowModal: React.FC<FollowModalProps> = ({
           <UserProfile
             influencerId={influencerId.toString()}
             onFollowStatusChange={onFollowStatusChange} // Prop 전달
+            onClose={onClose}
           />
         )}
       </Box>

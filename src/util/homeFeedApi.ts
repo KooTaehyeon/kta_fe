@@ -1,6 +1,7 @@
 import { jwtDecode } from "jwt-decode";
 import { CurrentLoggedInUser, DecodedAccessToken, Feed, FeedPrototype, Product, UserPrototype } from "../types/homeFeedType";
 import axios from "axios";
+import axiosInstance from "../api/client/index";
 
 export const convertToStringArray = (fetchedData: any): string[] => {
   let convertedFetchedData: string[] = [];
@@ -25,7 +26,7 @@ export const fetchUser = async () => {
     const decoded = jwtDecode<DecodedAccessToken>(token);
     // console.log("accessToken으로 사용자 정보를 가져왔습니다:", decoded);
 
-    const response = await axios.post("http://localhost:4000/homefeed/postcurrentloggedinuserinfo",
+    const response = await axiosInstance.post("/homefeed/postcurrentloggedinuserinfo",
       { id: decoded.userId },// Body에 보낼 데이터
       { headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" } } // 추가 설정: 헤더
     );
@@ -77,7 +78,7 @@ export const convertObjectArrayToProductArray = (objectArray: object[] | string[
 
 export const postUserIdByInfluencerId = async (influencerId: number): Promise<number | null> => {
   try {
-    const response = await axios.post("http://localhost:4000/homefeed/postuseridbyinfluencerid",
+    const response = await axiosInstance.post("/homefeed/postuseridbyinfluencerid",
       { influencerId: influencerId }
     );
     return response.data?.user_id || null;
@@ -89,7 +90,7 @@ export const postUserIdByInfluencerId = async (influencerId: number): Promise<nu
 
 export const postUsernameByUserId = async (userId: number): Promise<string | null> => {
   try {
-    const response = await axios.post("http://localhost:4000/homefeed/postusernamebyuserid", {
+    const response = await axiosInstance.post("/homefeed/postusernamebyuserid", {
       userId: userId,
     });
     return response.data?.username || null;
@@ -101,7 +102,7 @@ export const postUsernameByUserId = async (userId: number): Promise<string | nul
 
 export const postProfilePictureByUserId = async (userId: number): Promise<string | null> => {
   try {
-    const response = await axios.post("http://localhost:4000/homefeed/postusernamebyuserid", {
+    const response = await axiosInstance.post("/homefeed/postusernamebyuserid", {
       userId: userId,
     });
     return response.data?.profile_picture || null;
@@ -113,7 +114,7 @@ export const postProfilePictureByUserId = async (userId: number): Promise<string
 
 export const getMembershipProduct = async (visibilityLevel: number, influencerId: number): Promise<string | null> => {
   try {
-    const response = await axios.get("http://localhost:4000/homefeed/getmembershipproduct", { params: { visibilityLevel, influencerId, } });
+    const response = await axiosInstance.get("/homefeed/getmembershipproduct", { params: { visibilityLevel, influencerId, } });
     return response.data?.name || null;
   } catch (error) {
     console.error(`visibilityLevel ${influencerId} 및 influencerId ${influencerId}로 name을 가져오는 중 오류 발생:`, error);
@@ -191,7 +192,7 @@ export const processFeeds = async (feedPrototypes: FeedPrototype[], loggedInUser
 export const updateFeedLikes = async (feedId: number, stringifiedUpdatedFeedLikes: string[]) => {
   try {
     // 서버에 업데이트된 변경된 데이터를 전송
-    const response = await axios.patch(`http://localhost:4000/homefeed/${feedId}/likes`, {
+    const response = await axiosInstance.patch(`/homefeed/${feedId}/likes`, {
       likes: stringifiedUpdatedFeedLikes,
     });
   } catch (error) {

@@ -242,8 +242,13 @@ const Chat: React.FC<ChatProps> = ({ userId, content, id, likes }) => {
 
   const onLikes = async (id: string) => {
     if (userId === '0') return alert('로그인안되있어');
-    feedLikes(id);
-    setApiCall(!apiCall);
+    try {
+      await feedLikes(id);
+      setIsLiked((prev) => !prev);
+      setApiCall(!apiCall);
+    } catch (error) {
+      console.error('좋아요 처리 중 오류 발생:', error);
+    }
   };
   return (
     <Box sx={{ p: 2, height: '90%', display: 'flex', flexDirection: 'column' }}>
@@ -313,7 +318,7 @@ const Chat: React.FC<ChatProps> = ({ userId, content, id, likes }) => {
               fontWeight: 'bold', // 텍스트 굵기 변경 (선택사항)
             }}
           >
-            {likes.includes(`${userId}`) ? (
+            {isLiked ? (
               <FavoriteIcon sx={{ cursor: 'pointer', marginRight: '5px' }} />
             ) : (
               <FavoriteBorderIcon
@@ -334,7 +339,7 @@ const Chat: React.FC<ChatProps> = ({ userId, content, id, likes }) => {
             sx={{
               '& .MuiOutlinedInput-root': { '& fieldset': { border: 'none' } },
             }}
-            disabled = {!loggedInUser}
+            disabled={!loggedInUser}
           />
           <IconButton color='primary' onClick={commentSend}>
             <SendIcon />

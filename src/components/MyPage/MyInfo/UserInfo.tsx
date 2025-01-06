@@ -39,7 +39,8 @@ const UserInfo: React.FC<UserInfoProps> = ({ username, aboutMe, profilePicture, 
     </Typography>
     <Typography variant="body1" color="textSecondary" textAlign="center"
       sx={{
-        fontSize: "14px"
+        fontSize: "14px",
+        mb: 2
       }}
     >
       {aboutMe || "소개가 없습니다."}

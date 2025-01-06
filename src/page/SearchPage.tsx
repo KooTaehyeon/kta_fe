@@ -10,6 +10,7 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import axios from "axios";
+import axiosInstance from "../api/client/index";
 import { motion, AnimatePresence } from "framer-motion"; // Framer Motion 추가
 import FollowCard from "../components/common/FollowCard";
 import FollowModal from "../components/MyPage/FollowModal";
@@ -42,7 +43,8 @@ const SearchPage = () => {
 
   const fetchAllUsers = async () => {
     try {
-      const response = await axios.get('http://localhost:4000/user/all');
+      // const response = await axiosInstance.get('http://localhost:4000/user/all');
+      const response = await axiosInstance.get('/user/all');
       setUsers(response.data);
     } catch (error) {
       console.error('Error fetching users:', error);

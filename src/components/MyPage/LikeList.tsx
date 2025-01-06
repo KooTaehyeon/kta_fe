@@ -13,15 +13,15 @@ const LikeList: React.FC = () => {
   const { data: likes, error } = useFetchData(fetchUserLikes, userId);
 
   if (error) {
-    return <Typography variant="body1">Error loading likes</Typography>;
+    return <Typography variant="body1" marginBottom={"30px"}>게시물 목록을 불러오는데 실패했습니다.</Typography>;
   }
 
   // 데이터가 없는 경우 처리
   if (!likes || likes.length === 0) {
     return (
       <Container maxWidth="md" sx={{ marginTop: 4, textAlign: "center" }}>
-        <Typography variant="h6" color="textSecondary">
-          좋아요 한 게시물이 없습니다.
+        <Typography variant="h6" color="textSecondary" marginBottom={"30px"}>
+          좋아요한 게시물이 없습니다.
         </Typography>
       </Container>
     );

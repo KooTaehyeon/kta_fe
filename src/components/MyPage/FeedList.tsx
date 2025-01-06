@@ -64,7 +64,7 @@ const FeedList: React.FC = () => {
       // </Container>
     );
   } else {
-    return (<Typography variant="h6" color="textSecondary">
+    return (<Typography variant="h6" color="textSecondary" marginBottom={"30px"}>
       작성한 피드가 없습니다.
     </Typography>)
   }

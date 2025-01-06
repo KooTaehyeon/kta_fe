@@ -20,6 +20,8 @@ import ChatPage from "../components/Feed/Modal/FeedModal";
 import { useModal } from "../hooks/useModal";
 import socket from "../util/socket_noti";
 
+import { deleteHandleDeleteNotification, getNotificationsApi } from '../api/requests/notificationPageApi';
+
 interface NotificationType {
   id: number;
   username: string;
@@ -58,10 +60,12 @@ const NotificationPage: React.FC = () => {
   useEffect(() => {
     const getNotifications = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:4000/noti/${userId}`,
-        );
-        console.log(response.data);
+        const response = await getNotificationsApi(userId);
+        if (!response || !response.data) {
+          console.error('User getNotificationsApi is not available.');
+          return; // 빈 결과 반환
+        }
+
         if (response.data.success) {
           const processedNotifications = response.data.data.map(
             (notification: any) => ({
@@ -103,7 +107,12 @@ const NotificationPage: React.FC = () => {
 
   const handleDeleteNotification = async (notificationId: number) => {
     try {
-      await axios.delete(`http://localhost:4000/noti/${notificationId}`);
+
+      const response = await deleteHandleDeleteNotification(notificationId);
+      if (!response || !response.data) {
+        console.error('User deleteHandleDeleteNotification is not available.');
+        return; // 빈 결과 반환
+      }
 
       setNotifications((prevNotifications) =>
         prevNotifications.filter((noti) => noti.id !== notificationId),
