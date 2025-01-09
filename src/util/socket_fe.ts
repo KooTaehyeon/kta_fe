@@ -11,7 +11,7 @@ interface MessagePayload {
 
 export const connectSocket = (roomId: string): Socket | null => {
   if (!socket) {
-    console.log('Initializing new socket connection.');
+    console.log('Initializing new socket connection.', roomId);
     socket = io('https://celebright.p-e.kr', {
       transports: ['websocket'], // WebSocket 우선 사용
     });
