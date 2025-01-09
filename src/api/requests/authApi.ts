@@ -6,30 +6,30 @@ type AckResponse = {
   status: string;
 };
 
-socket.on('connect', () => {
-  console.log('Socket connected successfully!');
-  const userId = getUserId(); // 사용자 ID 가져오기
-  if (userId) {
-    console.log('Registering user on initial connection...');
-    socket.emit('register', userId, (ack: AckResponse) => {
-      console.log('Initial registration acknowledged:', ack, userId);
-    });
-  }
-});
+// socket.on('connect', () => {
+//   console.log('Socket connected successfully!');
+//   const userId = getUserId(); // 사용자 ID 가져오기
+//   if (userId) {
+//     console.log('Registering user on initial connection...');
+//     socket.emit('register', userId, (ack: AckResponse) => {
+//       console.log('Initial registration acknowledged:', ack, userId);
+//     });
+//   }
+// });
 
-socket.on('connect_error', (error) => {
-  console.error('Socket connection error:', error.message);
-});
+// socket.on('connect_error', (error) => {
+//   console.error('Socket connection error:', error.message);
+// });
 
-socket.on('reconnect', () => {
-  const userId = getUserId();
-  if (userId) {
-    console.log('Socket reconnected. Re-registering user...');
-    socket.emit('register', userId, (ack: AckResponse) => {
-      console.log('Re-registration acknowledged:', ack, userId);
-    });
-  }
-});
+// socket.on('reconnect', () => {
+//   const userId = getUserId();
+//   if (userId) {
+//     console.log('Socket reconnected. Re-registering user...');
+//     socket.emit('register', userId, (ack: AckResponse) => {
+//       console.log('Re-registration acknowledged:', ack, userId);
+//     });
+//   }
+// });
 
 const REACT_APP_BACKEND_URL =
   process.env.REACT_APP_BACKEND_URL || 'DEFAULT_REACT_APP_BACKEND_URL';
