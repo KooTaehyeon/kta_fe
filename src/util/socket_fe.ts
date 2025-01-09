@@ -13,7 +13,6 @@ export const connectSocket = (roomId: string): Socket | null => {
   if (!socket) {
     console.log('Initializing new socket connection.');
     socket = io('https://celebright.p-e.kr/api', {
-      path: '/api', // 서버에서 설정한 경로
       transports: ['websocket'], // WebSocket 우선 사용
     });
   } else {
